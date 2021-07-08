@@ -61,16 +61,16 @@ resource "azurerm_public_ip" "vm1_pip" {
   allocation_method   = "Dynamic"
 }
 // testing Datadisk in vm
-// resource "azurerm_virtual_machine_data_disk_attachment" "attachedDisk" {
-//   count              = var.nb_count
-//   // managed_disk_id    = "${azurerm_managed_disk.linuxmanage_disk[*].id}"
-//   managed_disk_id     = element(azurerm_managed_disk.linuxmanage_disk[*].id, count.index + 1)
-//   lun                = "10"
-//   caching            = "ReadWrite"
-//   virtual_machine_id  = "${azurerm_linux_virtual_machine.linuxvm1[count.index].id}"
-//   // element(var.vm-linux-name[*].id, count.index)
+resource "azurerm_virtual_machine_data_disk_attachment" "attachedDisk" {
+  count              = length(var.nb_count)
+  // managed_disk_id    = "${azurerm_managed_disk.linuxmanage_disk[*].id}"
+  managed_disk_id     = element(azurerm_managed_disk.linuxmanage_disk[*].id, count.index + 1)
+  lun                = "10"
+  caching            = "ReadWrite"
+  virtual_machine_id  = "${azurerm_linux_virtual_machine.linuxvm1[count.index].id}"
+  // element(var.vm-linux-name[*].id, count.index)
   
-// }
+}
 resource "azurerm_managed_disk" "linuxmanage_disk" {
   name                 = var.manageddisk
   location             = var.location
