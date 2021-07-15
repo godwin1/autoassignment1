@@ -63,6 +63,9 @@ locals {
 
 }
 
+variable "networkinterface"{
+  description = "ids of network interface"
+}
 variable "subnet1" {
   default = "lab01-subnet1"
 }

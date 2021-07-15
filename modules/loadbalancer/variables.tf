@@ -24,3 +24,6 @@ locals {
   }
 
 }
+variable "networkinterface"{
+  description = "ids of network interface"
+}

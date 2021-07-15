@@ -48,7 +48,7 @@ resource "azurerm_network_interface" "vm1_nic" {
   ip_configuration {
     name                          = "${var.vm_linux_name}-ip-${format("%1d", count.index + 1)}"
     subnet_id                     = var.subnet_id
-    public_ip_address_id          = element(azurerm_public_ip.vm1_pip[*].id, count.index + 1)
+    public_ip_address_id          = element(azurerm_public_ip.vm1_pip[*].id, count.index)
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -63,12 +63,10 @@ resource "azurerm_public_ip" "vm1_pip" {
 // testing Datadisk in vm
 resource "azurerm_virtual_machine_data_disk_attachment" "attachedDisk" {
   count              = length(var.nb_count)
-  // managed_disk_id    = "${azurerm_managed_disk.linuxmanage_disk[*].id}"
-  managed_disk_id     = element(azurerm_managed_disk.linuxmanage_disk[*].id, count.index + 1)
+  managed_disk_id     = element(azurerm_managed_disk.linuxmanage_disk[*].id, count.index)
   lun                = "10"
   caching            = "ReadWrite"
   virtual_machine_id  = "${azurerm_linux_virtual_machine.linuxvm1[count.index].id}"
-  // element(var.vm-linux-name[*].id, count.index)
   
 }
 resource "azurerm_managed_disk" "linuxmanage_disk" {

@@ -19,15 +19,15 @@ resource "azurerm_public_ip" "vm1_pip" {
 resource "azurerm_lb_backend_address_pool" "addresspool" {
   loadbalancer_id = azurerm_lb.loadbalancer.id
   name            = "BackEndAddressPool"
-   resource_group_name = var.rg_name
+  resource_group_name = var.rg_name
 }
 resource "azurerm_lb_rule" "lbrule" {
   resource_group_name            = var.rg_name
   loadbalancer_id                = azurerm_lb.loadbalancer.id
   name                           = "LBRule"
   protocol                       = "Tcp"
-  frontend_port                  = 3389
-  backend_port                   = 3389
+  frontend_port                  = 22
+  backend_port                   = 22
   frontend_ip_configuration_name = "PublicIPAddress"
 } 
 resource "azurerm_lb_probe" "lbprobe" {
@@ -35,4 +35,10 @@ resource "azurerm_lb_probe" "lbprobe" {
   loadbalancer_id     = azurerm_lb.loadbalancer.id
   name                = "ssh-running-probe"
   port                = 22
+}
+resource "azurerm_network_interface_backend_address_pool_association" "backend" {
+  count                   =length(var.nb_count)
+  network_interface_id    = element(var.networkinterface[*].id, count.index)
+  ip_configuration_name   = element(var.networkinterface[*].ip_configuration[0].name, count.index)
+  backend_address_pool_id = azurerm_lb_backend_address_pool.addresspool.id
 }
